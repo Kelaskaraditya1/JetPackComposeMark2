@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.starkindustries.jetpackcomposemark2"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.starkindustries.jetpackcomposemark2"
@@ -47,6 +47,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures{
+        dataBinding=true
+    }
 }
 
 dependencies {
@@ -66,4 +69,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
