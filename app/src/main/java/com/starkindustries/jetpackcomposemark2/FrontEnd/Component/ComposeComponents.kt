@@ -22,11 +22,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -152,8 +159,82 @@ fun LazyColumn(userList:ArrayList<ProfileData>){
     })
 }
 
+
+
+@Composable
+fun HoistingFunction(){
+    var count= rememberSaveable{
+        mutableStateOf(0)
+    }
+    Column(modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center) {
+        Text(text = "The value of count is: ${count.value}",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 18.sp)
+        Button(onClick = { count.value++},
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+            Text(text = "Increment")
+        }
+
+    }
+}
+
+@Composable
+fun StateFunction(count:Int,onClick:()->Unit){
+    Column(
+        verticalArrangement = Arrangement.Center) {
+        Text(text = "The value of count is: ${count}",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 20.sp)
+        Button(onClick = {onClick() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+            Text(text = "Increment",
+                fontSize = 20.sp)
+        }
+    }
+}
+
+@Composable
+fun NotificationCardCompose(count:Int){
+    Card(shape= RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(60.dp)
+            .padding(40.dp, 10.dp, 40.dp, 0.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.LightGray
+        )) {
+        Row (modifier = Modifier.fillMaxSize()){
+            Image(imageVector = Icons.Outlined.Favorite, contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(40.dp, 0.dp, 0.dp, 0.dp)
+                    .size(35.dp))
+            Text(text = "Message sent so far:$count",
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(10.dp, 0.dp, 0.dp, 0.dp),
+                fontSize = 18.sp,)
+        }
+    }
+}
+
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewFunction(){
-
+    var count = rememberSaveable {
+        mutableStateOf(0)
+    }
+    Column (modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center){
+        StateFunction(count.value,{count.value++})
+        NotificationCardCompose(count.value)
+    }
 }
