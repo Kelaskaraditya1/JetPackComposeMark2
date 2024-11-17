@@ -6,6 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.widget.ListPopupWindowCompat
+import com.starkindustries.jetpackcomposemark2.FrontEnd.Component.LazyColumn
+import com.starkindustries.jetpackcomposemark2.FrontEnd.Component.ListColumn
+import com.starkindustries.jetpackcomposemark2.Utility.UtillityClass
 import com.starkindustries.jetpackcomposemark2.ui.theme.JetPackComposeMark2Theme
 
 class MainActivity : ComponentActivity() {
@@ -26,5 +30,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     JetPackComposeMark2Theme {
+        var userList= UtillityClass.getData()
+        LazyColumn(userList)
     }
 }
