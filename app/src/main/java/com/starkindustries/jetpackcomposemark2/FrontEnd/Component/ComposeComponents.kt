@@ -3,6 +3,7 @@ package com.starkindustries.jetpackcomposemark2.FrontEnd.Component
 import android.graphics.Paint.Align
 import android.graphics.Paint.Style
 import android.service.autofill.UserData
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -227,8 +230,44 @@ fun NotificationCardCompose(count:Int){
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun PreviewFunction(){
+fun TextDisplayCompose(){
+    val state = rememberSaveable{
+        mutableStateOf("")
+    }
+    val displayText = rememberSaveable{
+        mutableStateOf("")
+    }
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center) {
+            Text(text = displayText.value,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.W600,
+                textAlign = TextAlign.Center)
+        TextField(value = state.value, onValueChange = {
+            state.value=it
+        },
+            label = {
+                Text(text = "Name")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp))
+            Button(onClick = {  displayText.value=state.value },
+                modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(text = "Submit",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true, name = "PreviewMark1")
+fun PreviewFunctionStateHoisting(){
     var count = rememberSaveable {
         mutableStateOf(0)
     }
@@ -237,4 +276,11 @@ fun PreviewFunction(){
         StateFunction(count.value,{count.value++})
         NotificationCardCompose(count.value)
     }
+}
+
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun PreviewFunction(){
+    TextDisplayCompose()
 }
