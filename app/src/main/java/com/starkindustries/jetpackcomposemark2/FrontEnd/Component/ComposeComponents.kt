@@ -26,6 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -178,7 +180,10 @@ fun HoistingFunction(){
         Button(onClick = { count.value++},
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+                .padding(0.dp, 10.dp, 0.dp, 0.dp),
+            shape = RoundedCornerShape(12.dp),
+            elevation =ButtonDefaults.buttonElevation()
+        ) {
             Text(text = "Increment")
         }
 
@@ -265,22 +270,63 @@ fun TextDisplayCompose(){
         }
     }
 
-@Composable
-@Preview(showBackground = true, showSystemUi = true, name = "PreviewMark1")
-fun PreviewFunctionStateHoisting(){
-    var count = rememberSaveable {
-        mutableStateOf(0)
-    }
-    Column (modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center){
-        StateFunction(count.value,{count.value++})
-        NotificationCardCompose(count.value)
-    }
-}
+//@Composable
+//@Preview(showBackground = true, showSystemUi = true, name = "PreviewMark1")
+//fun PreviewFunctionStateHoisting(){
+//    var count = rememberSaveable {
+//        mutableStateOf(0)
+//    }
+//    Column (modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center){
+//        StateFunction(count.value,{count.value++})
+//        NotificationCardCompose(count.value)
+//    }
+//}
 
+
+@Composable
+fun RoundedCardImage(imageId:Int,text:String){
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(10.dp)){
+        Card(modifier = Modifier
+            .size(200.dp)
+            .fillMaxSize(),
+            shape = RoundedCornerShape(18.dp),
+            elevation = CardDefaults.cardElevation(12.dp)
+        ) {
+            Box() {
+                Image(painter = painterResource(id = imageId), contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop)
+                Box(modifier = Modifier.fillMaxSize().
+                background(Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Black
+                            ),
+                    startY = 300f
+                        )
+                    )
+                )
+                Text(text = text,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.W500,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(0.dp, 0.dp, 0.dp, 10.dp))
+            }
+        }
+    }
+
+}
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewFunction(){
-    TextDisplayCompose()
+    RoundedCardImage(imageId = R.drawable.casual_pic,"I am Imronman")
 }
