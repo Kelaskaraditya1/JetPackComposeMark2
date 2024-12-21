@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,19 +24,29 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeCompilerApi
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,17 +55,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.RelativePosition.Companion.Parent
 import com.starkindustries.jetpackcomposemark2.Data.ProfileData
 import com.starkindustries.jetpackcomposemark2.R
 import com.starkindustries.jetpackcomposemark2.Utility.UtillityClass
+import kotlin.random.Random
 
 @Composable
 fun ProfilePicCompose(imageId:Int,modifier: Modifier){
@@ -299,13 +317,15 @@ fun RoundedCardImage(imageId:Int,text:String){
                 Image(painter = painterResource(id = imageId), contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop)
-                Box(modifier = Modifier.fillMaxSize().
-                background(Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        Color.Black
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black
                             ),
-                    startY = 300f
+                            startY = 300f
                         )
                     )
                 )
@@ -318,7 +338,8 @@ fun RoundedCardImage(imageId:Int,text:String){
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .padding(0.dp, 0.dp, 0.dp, 10.dp))
+                        .padding(0.dp, 0.dp, 0.dp, 10.dp),
+                    textDecoration = TextDecoration.Underline)
             }
         }
     }
@@ -326,7 +347,89 @@ fun RoundedCardImage(imageId:Int,text:String){
 }
 
 @Composable
+fun StateExample(modifier: Modifier,updateColor:(Color)->Unit){
+
+    Box(modifier = modifier
+        .fillMaxSize()
+        .background(Color.Red)
+        .clickable {
+            updateColor(
+                Color(
+                    Random.nextFloat(),
+                    Random.nextFloat(),
+                    Random.nextFloat(),
+                    1f
+                )
+            )
+        })
+
+}
+
+@Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PreviewFunction(){
-    RoundedCardImage(imageId = R.drawable.casual_pic,"I am Imronman")
+    val color = remember {
+        mutableStateOf(Color.Blue)
+    }
+    Column(modifier = Modifier.padding(10.dp)) {
+        StateExample(
+            Modifier
+                .fillMaxSize()
+                .weight(1f)){
+            color.value=it
+        }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .background(color.value)){
+
+        }
+    }
+}
+
+@Composable
+fun ConstraintLayoutCompose(){
+    val constraintSet = ConstraintSet {
+        val greenBox = createRefFor("GREEN")
+        val redBox = createRefFor("RED")
+        constrain(greenBox){
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            width=Dimension.value(150.dp)
+            height=Dimension.value(150.dp)
+        }
+        constrain(redBox){
+            top.linkTo(parent.top)
+            start.linkTo(greenBox.end)
+            width=Dimension.value(150.dp)
+            height=Dimension.value(150.dp)
+        }
+
+    }
+    ConstraintLayout(constraintSet, modifier = Modifier
+        .fillMaxSize()) {
+
+        Box(modifier = Modifier
+            .background(Color.Green)
+            .layoutId("GREEN")
+            .size(120.dp),
+            contentAlignment = Alignment.Center){
+            Text(text = "I am Green Box")
+        }
+        Box(modifier = Modifier
+            .background(Color.Red)
+            .size(120.dp)
+            .layoutId("RED"),
+            contentAlignment = Alignment.Center){
+            Text(text = "I am Red Box")
+        }
+    }
+
+}
+
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun PreviewFunctionMark2(){
+    ConstraintLayoutCompose()
 }
